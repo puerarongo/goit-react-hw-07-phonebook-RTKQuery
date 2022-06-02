@@ -1,35 +1,26 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  contactsFetch,
-  contactDelete,
-} from 'redux/operations/contacts-operation';
+import React from 'react';
 import Loader from 'components/loader/Loader';
 import styles from './ContactList.module.css';
+import {
+  useGetContactsQuery,
+  useAddContactMutation,
+} from 'redux/operations/contacts-operation';
 
 const ContactList = () => {
-  const dispatch = useDispatch();
-  const itemsContact = useSelector(state => state.contacts.items);
-  const filterContact = useSelector(state => state.contacts.filter);
-  const loadingContacts = useSelector(state => state.contacts.loading);
-
-  const dataContacts = itemsContact.filter(({ name }) =>
-    name.toLowerCase().includes(filterContact.toLowerCase())
-  );
-
-  useEffect(() => {
-    dispatch(contactsFetch());
-  }, [dispatch]);
-
-  const deleteHandler = id => dispatch(contactDelete(id));
+  const contact = { name: 'Vano', phone: '333-33-33' };
+  const { data } = useGetContactsQuery();
+  const add = useAddContactMutation(contact);
+  //console.log(data)
+  console.log('Fetch', data);
+  console.log('Add', add);
 
   return (
     <div className={styles.container}>
       <ul>
-        {loadingContacts ? (
+        {1 < 0 ? (
           <Loader />
         ) : (
-          dataContacts.map(({ id, name, phone }) => {
+          data.map(({ id, name, phone }) => {
             return (
               <li key={id} className={styles.contact}>
                 <span>
@@ -38,7 +29,7 @@ const ContactList = () => {
                 <button
                   className={styles.button__delete}
                   type="button"
-                  onClick={() => deleteHandler(id)}
+                  onClick={() => console.log(id)}
                 >
                   Delete
                 </button>
