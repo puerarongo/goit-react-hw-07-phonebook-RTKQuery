@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
+import {
+  useGetContactsQuery,
+  useAddContactMutation,
+} from 'redux/operations/contacts-operation';
+import { Report } from 'notiflix/build/notiflix-report-aio';
 import styles from './Form.module.css';
 
 const Form = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const { data } = useGetContactsQuery();
+  const [addContact] = useAddContactMutation();
 
   // todo Function
   const inputHandler = e => {
@@ -21,6 +28,18 @@ const Form = () => {
 
   const submitHandler = e => {
     e.preventDefault();
+    const contact = { name: name, phone: phone };
+
+    const newArr = data.map(({ name }) => name.toLowerCase());
+    if (newArr.includes(name.toLowerCase())) {
+      return Report.failure(
+        'Failure',
+        `${name} is already in contacts!`,
+        'Try again'
+      );
+    }
+
+    addContact(contact);
     setName('');
     setPhone('');
   };

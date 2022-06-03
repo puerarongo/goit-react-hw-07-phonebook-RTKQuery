@@ -7,8 +7,8 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-//import contactsReducer from './reducers/contacts-reducer';
 import { contactsApi } from './operations/contacts-operation';
+import filter from './reducers/contacts-reducer';
 
 const middleware = [
   ...getDefaultMiddleware({
@@ -21,7 +21,7 @@ const middleware = [
 
 export const store = configureStore({
   reducer: {
-    //contacts: contactsReducer,
+    filter: filter,
     [contactsApi.reducerPath]: contactsApi.reducer,
   },
   middleware: middleware,

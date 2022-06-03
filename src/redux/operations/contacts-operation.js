@@ -7,11 +7,13 @@ const BASE_URL = 'https://629734048d77ad6f75fd043c.mockapi.io/api/v1/';
 export const contactsApi = createApi({
   reducerPath: 'contactsApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://629734048d77ad6f75fd043c.mockapi.io/api/v1/',
+    baseUrl: BASE_URL,
   }),
+  tagTypes: ['Contacts'],
   endpoints: builder => ({
     getContacts: builder.query({
       query: () => 'contacts',
+      providesTags: ['Contacts'],
     }),
 
     addContact: builder.mutation({
@@ -20,11 +22,15 @@ export const contactsApi = createApi({
         method: 'POST',
         body: { name, phone },
       }),
-      transformResponse: (response, meta, arg) => response.data,
+      invalidatesTags: ['Contacts'],
     }),
 
     deleteContact: builder.mutation({
-      query: id => `/contacts/${id}`,
+      query: id => ({
+        url: `/contacts/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Contacts'],
     }),
   }),
 });
@@ -34,32 +40,6 @@ export const {
   useAddContactMutation,
   useDeleteContactMutation,
 } = contactsApi;
-
-// !  createAsyncThunk methods
-//export const contactsFetch = createAsyncThunk(
-//  'items/fetchContact',
-//  async () => {
-//    const request = await axios.get('/contacts');
-//    return request.data;
-//  }
-//);
-//
-//export const contactAdd = createAsyncThunk(
-//  'items/addContact',
-//  async ({ name, phone }) => {
-//    const contact = { name: name, phone: phone };
-//    const request = await axios.post('/contacts', contact);
-//    return request.data;
-//  }
-//);
-//
-//export const contactDelete = createAsyncThunk(
-//  'items/deleteContact',
-//  async id => {
-//    await axios.delete(`/contacts/${id}`);
-//    return id;
-//  }
-//);
 
 // ? Vanilla methods
 //export const contactsFetch = () => async dispatch => {

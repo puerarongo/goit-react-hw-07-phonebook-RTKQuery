@@ -1,7 +1,17 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { filtration } from '../../redux/actions/contacts-actions';
 import styles from './Filter.module.css';
 
 const Filter = () => {
+  const filterContact = useSelector(state => state.filter);
+  const dispatch = useDispatch();
+
+  const inputHandler = e => {
+    console.log(e.currentTarget.value);
+    dispatch(filtration(e.currentTarget.value));
+  };
+
   return (
     <div className={styles.container}>
       <label>
@@ -10,8 +20,8 @@ const Filter = () => {
           className={styles.form__input}
           type="text"
           name="filter"
-          value={3}
-          onChange={3}
+          value={filterContact}
+          onChange={inputHandler}
         ></input>
       </label>
     </div>

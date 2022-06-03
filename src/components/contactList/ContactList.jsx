@@ -1,26 +1,31 @@
 import React from 'react';
 import Loader from 'components/loader/Loader';
-import styles from './ContactList.module.css';
 import {
   useGetContactsQuery,
-  useAddContactMutation,
+  useDeleteContactMutation,
 } from 'redux/operations/contacts-operation';
+import { useSelector } from 'react-redux';
+import styles from './ContactList.module.css';
 
 const ContactList = () => {
-  const contact = { name: 'Vano', phone: '333-33-33' };
-  const { data } = useGetContactsQuery();
-  const add = useAddContactMutation(contact);
-  //console.log(data)
-  console.log('Fetch', data);
-  console.log('Add', add);
+  const { isLoading, data } = useGetContactsQuery();
+  const [deleteContact] = useDeleteContactMutation();
+  const filterContact = useSelector(state => state.filter);
+
+  const filtredContacts = () => {
+    return data.filter(({ name }) =>
+      name.toLowerCase().includes(filterContact.toLowerCase())
+    );
+  };
 
   return (
     <div className={styles.container}>
       <ul>
-        {1 < 0 ? (
+        {isLoading ? (
           <Loader />
         ) : (
-          data.map(({ id, name, phone }) => {
+          data &&
+          filtredContacts().map(({ id, name, phone }) => {
             return (
               <li key={id} className={styles.contact}>
                 <span>
@@ -29,7 +34,7 @@ const ContactList = () => {
                 <button
                   className={styles.button__delete}
                   type="button"
-                  onClick={() => console.log(id)}
+                  onClick={() => deleteContact(id)}
                 >
                   Delete
                 </button>
